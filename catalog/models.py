@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 
+
 class Course(models.Model):
     code = models.CharField(max_length=20, unique=True)
     title = models.CharField(max_length=200)
@@ -18,8 +19,13 @@ class Course(models.Model):
 
     class Meta:
         ordering = ["code"]
+        indexes = [
+            models.Index(fields=["is_active", "title"]),
+        ]
+
     def __str__(self):
         return f"{self.code} - {self.title}"
+
 
 class Lesson(models.Model):
    course = models.ForeignKey(
@@ -56,6 +62,7 @@ class Enrollment(models.Model):
        related_name="enrollments",
    )
    enrolled_at = models.DateTimeField(auto_now_add=True)
+   
    class Meta:
        constraints = [
            models.UniqueConstraint(
